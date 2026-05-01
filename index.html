@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>신약 매일 묵상</title>
+<meta name="theme-color" content="#5C4A2A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FAF8F4;--surface:#FFF;--surface2:#F3F0EA;--border:#E8E3D9;--t1:#1C1A17;--t2:#6B6355;--t3:#9E9485;--accent:#5C4A2A;--accent-l:#EDE5D4;--gold:#B8952A;--cross:#8B6E3F;}
+@media(prefers-color-scheme:dark){:root{--bg:#141210;--surface:#1E1C18;--surface2:#252218;--border:#312D24;--t1:#F0EBE0;--t2:#A99D87;--t3:#6B6355;--accent:#C9A96E;--accent-l:#2A2318;--gold:#C9A96E;--cross:#C9A96E;}}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%;background:var(--bg);color:var(--t1);font-family:'Noto Sans KR',sans-serif}
+body{max-width:430px;margin:0 auto;min-height:100vh}
+.screen{display:none;min-height:100vh;flex-direction:column}.screen.active{display:flex}
+.hero{padding:3rem 1.5rem 1.75rem;text-align:center}
+.cross{font-size:1.75rem;color:var(--cross);margin-bottom:1.25rem}
+.htitle{font-family:'Noto Serif KR',serif;font-size:1.65rem;font-weight:600;line-height:1.35}
+.hsub{font-size:.825rem;color:var(--t2);margin-top:.5rem;line-height:1.75}
+.kbody{padding:0 1.25rem 2.5rem;flex:1}
+.how{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.1rem 1.25rem;margin-bottom:1.25rem}
+.hlbl{font-size:.68rem;font-weight:500;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.65rem}
+.hsteps{font-size:.825rem;color:var(--t2);line-height:1.9}.hsteps a{color:var(--gold)}
+.inpw{position:relative;margin-bottom:.875rem}
+.kinp{width:100%;padding:12px 44px 12px 14px;border-radius:10px;border:1px solid var(--border);background:var(--surface);font-family:'Noto Sans KR',sans-serif;font-size:.825rem;color:var(--t1);outline:none}
+.kinp:focus{border-color:var(--gold)}
+.eyebtn{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--t3);cursor:pointer;font-size:.9rem}
+.sbtn{width:100%;padding:14px;border-radius:12px;background:var(--accent);color:#FAF8F4;border:none;font-family:'Noto Serif KR',serif;font-size:.95rem;font-weight:600;cursor:pointer;margin-bottom:.75rem}
+.sbtn:active{opacity:.85}
+.knote{font-size:.73rem;color:var(--t3);text-align:center;line-height:1.65}
+.lbl{font-size:.68rem;font-weight:500;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.65rem;display:block}
+.sbody{padding:.75rem 1.25rem 2.5rem;flex:1}
+.bgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;max-height:44vh;overflow-y:auto;margin-bottom:1.25rem}
+.bbtn{padding:10px 4px;border-radius:8px;border:1px solid var(--border);background:var(--surface);font-family:'Noto Sans KR',sans-serif;font-size:.76rem;color:var(--t2);cursor:pointer;text-align:center;line-height:1.35;word-break:keep-all}
+.bbtn.sel{background:var(--accent-l);border-color:var(--gold);color:var(--accent);font-weight:500}
+.chrow{margin-bottom:1.5rem}
+.chrow select{width:100%;padding:11px 14px;border-radius:10px;border:1px solid var(--border);background:var(--surface);font-family:'Noto Sans KR',sans-serif;font-size:.875rem;color:var(--t1);-webkit-appearance:none;outline:none}
+.gobtn{width:100%;padding:15px;border-radius:12px;background:var(--accent);color:#FAF8F4;border:none;font-family:'Noto Serif KR',serif;font-size:1rem;font-weight:600;cursor:pointer}
+.gobtn:active{opacity:.85}
+.rhdr{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--border);padding:.875rem 1.25rem;display:flex;align-items:center;justify-content:space-between}
+.hleft{display:flex;flex-direction:column}.hdate{font-size:.68rem;color:var(--t3)}.htit{font-family:'Noto Serif KR',serif;font-size:1rem;font-weight:600}
+.hright{display:flex;gap:7px}
+.icn{width:36px;height:36px;border-radius:50%;border:1px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.875rem;color:var(--t2)}
+.icn:active{background:var(--surface2)}.icn.on{background:var(--accent-l);border-color:var(--gold);color:var(--accent)}
+.loadw{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;padding:3rem 2rem;text-align:center}
+.cpulse{font-size:1.75rem;color:var(--cross);animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.35;transform:scale(.95)}50%{opacity:1;transform:scale(1)}}
+.ltxt{font-size:.875rem;color:var(--t2);line-height:1.7}
+.dots span{animation:blink 1.4s infinite}.dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:0}40%{opacity:1}}
+.rcontent{flex:1;padding-bottom:5rem}
+.chblock{padding:1.5rem 1.25rem;border-bottom:1px solid var(--border)}
+.chlbl{font-size:.68rem;font-weight:500;color:var(--gold);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.35rem}
+.chname{font-family:'Noto Serif KR',serif;font-size:1.05rem;font-weight:600;margin-bottom:1rem}
+.vtxt{font-family:'Noto Serif KR',serif;font-size:.975rem;line-height:1.95}
+.vn{font-size:.6rem;font-weight:500;color:var(--gold);vertical-align:super;margin-right:1px;font-family:'Noto Sans KR',sans-serif}
+.spill{display:inline-flex;padding:3px 10px;background:var(--accent-l);border-radius:20px;font-size:.67rem;font-weight:500;color:var(--accent);margin:1rem 0 7px;letter-spacing:.04em}
+.stxt{font-size:.845rem;color:var(--t2);line-height:1.75}
+.tablock{margin:1.25rem;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.25rem;position:relative;overflow:hidden}
+.tablock::before{content:'✝';position:absolute;right:1.25rem;top:1rem;font-size:1.5rem;color:var(--border)}
+.talbl{font-size:.68rem;font-weight:500;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem}
+.tatxt{font-family:'Noto Serif KR',serif;font-size:1rem;line-height:1.8}
+.navrow{display:flex;gap:8px;padding:0 1.25rem 1.5rem}
+.nbtn{flex:1;padding:11px;border-radius:10px;border:1px solid var(--border);background:var(--surface);font-family:'Noto Sans KR',sans-serif;font-size:.8rem;color:var(--t2);cursor:pointer}
+.nbtn:active{background:var(--surface2)}.nbtn.pri{background:var(--accent);color:#FAF8F4;border-color:var(--accent)}
+.errw{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;padding:2rem;text-align:center}
+.errtxt{font-size:.875rem;color:var(--t2);line-height:1.7}
+.retry{padding:11px 28px;border-radius:10px;background:var(--accent);color:#FAF8F4;border:none;font-family:'Noto Sans KR',sans-serif;font-size:.875rem;cursor:pointer}
+.abar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--surface);border-top:1px solid var(--border);padding:.75rem 1.25rem 1.1rem;display:none;flex-direction:column;gap:8px;z-index:30}
+.abar.on{display:flex}.albl{font-size:.73rem;color:var(--t2)}
+.actrl{display:flex;align-items:center;gap:12px}
+.aprog{flex:1;height:3px;background:var(--border);border-radius:3px;overflow:hidden}
+.afill{height:100%;background:var(--gold);border-radius:3px;width:0%}
+.atime{font-size:.7rem;color:var(--t3);min-width:32px;text-align:right}
+.ppbtn{width:38px;height:38px;border-radius:50%;background:var(--accent);border:none;color:#FAF8F4;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.stpbtn{width:32px;height:32px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);color:var(--t2);font-size:.75rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.fade{animation:fi .4s ease forwards}@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+<div id="key-screen" class="screen">
+  <div class="hero"><div class="cross">✝</div><div class="htitle">신약 매일 묵상</div><div class="hsub">API 키를 한 번만 입력하면<br>매일 말씀 묵상을 시작할 수 있어요.</div></div>
+  <div class="kbody">
+    <div class="how"><div class="hlbl">API 키 발급 방법</div><div class="hsteps">1. <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> 접속<br>2. Billing에서 $5 충전<br>3. API Keys → Create Key<br>4. 생성된 키를 아래 붙여넣기</div></div>
+    <div class="inpw"><input class="kinp" type="password" id="kinp" placeholder="sk-ant-api03-..." autocomplete="off"/><button class="eyebtn" onclick="toggleEye()">👁</button></div>
+    <button class="sbtn" onclick="saveKey()">저장하고 시작하기</button>
+    <div class="knote">🔒 키는 이 기기 브라우저에만 저장돼요.</div>
+  </div>
+</div>
+<div id="setup-screen" class="screen">
+  <div class="hero"><div class="cross">✝</div><div class="htitle">신약 매일 묵상</div><div class="hsub">하루 세 챕터 · 개역개정 본문<br>요약과 오늘의 묵상 한 문장</div></div>
+  <div class="sbody">
+    <span class="lbl">시작할 책</span>
+    <div class="bgrid" id="bgrid"></div>
+    <span class="lbl">시작 챕터</span>
+    <div class="chrow"><select id="chsel"></select></div>
+    <button class="gobtn" onclick="startReading()">묵상 시작하기</button>
+  </div>
+</div>
+<div id="reading-screen" class="screen">
+  <div class="rhdr">
+    <div class="hleft"><div class="hdate" id="hdate"></div><div class="htit" id="htit">로딩 중...</div></div>
+    <div class="hright">
+      <div class="icn" id="licn" onclick="toggleAudio()">🎧</div>
+      <div class="icn" onclick="toSetup()">📖</div>
+      <div class="icn" onclick="toKey()" style="font-size:.72rem;font-weight:500;color:var(--t3)">키</div>
+    </div>
+  </div>
+  <div id="rbody" style="flex:1;display:flex;flex-direction:column"></div>
+  <div class="abar" id="abar">
+    <div class="albl" id="albl">읽는 중...</div>
+    <div class="actrl">
+      <button class="ppbtn" id="ppbtn" onclick="togglePause()">⏸</button>
+      <div class="aprog"><div class="afill" id="afill"></div></div>
+      <div class="atime" id="atime">0:00</div>
+      <button class="stpbtn" onclick="stopAudio()">■</button>
+    </div>
+  </div>
+</div>
+<script>
+const BOOKS=[{n:'마태복음',c:28},{n:'마가복음',c:16},{n:'누가복음',c:24},{n:'요한복음',c:21},{n:'사도행전',c:28},{n:'로마서',c:16},{n:'고린도전서',c:16},{n:'고린도후서',c:13},{n:'갈라디아서',c:6},{n:'에베소서',c:6},{n:'빌립보서',c:4},{n:'골로새서',c:4},{n:'데살로니가전서',c:5},{n:'데살로니가후서',c:3},{n:'디모데전서',c:6},{n:'디모데후서',c:4},{n:'디도서',c:3},{n:'빌레몬서',c:1},{n:'히브리서',c:13},{n:'야고보서',c:5},{n:'베드로전서',c:5},{n:'베드로후서',c:3},{n:'요한일서',c:5},{n:'요한이서',c:1},{n:'요한삼서',c:1},{n:'유다서',c:1},{n:'요한계시록',c:22}];
+let apiKey=localStorage.getItem('nt_key')||'',selBook=BOOKS[0],selCh=1,curData=null,readTxt='',speaking=false,paused=false,elapsed=0,tmr=null;
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
+function toKey(){stopAudio();show('key-screen')}function toSetup(){stopAudio();show('setup-screen')}
+function toggleEye(){const i=document.getElementById('kinp');i.type=i.type==='password'?'text':'password'}
+function saveKey(){const v=document.getElementById('kinp').value.trim();if(!v.startsWith('sk-ant')){alert('올바른 API 키를 입력해 주세요.');return}apiKey=v;localStorage.setItem('nt_key',v);show('setup-screen')}
+function renderBooks(){document.getElementById('bgrid').innerHTML=BOOKS.map(b=>`<button class="bbtn${b.n===selBook.n?' sel':''}" onclick="pickBook('${b.n}')">${b.n}</button>`).join('')}
+function pickBook(n){selBook=BOOKS.find(b=>b.n===n);selCh=1;renderBooks();renderChs()}
+function renderChs(){const s=document.getElementById('chsel');s.innerHTML=Array.from({length:selBook.c},(_,i)=>`<option value="${i+1}">${i+1}장</option>`).join('');s.value=selCh;s.onchange=()=>{selCh=parseInt(s.value)}}
+function startReading(){selCh=parseInt(document.getElementById('chsel').value);show('reading-screen');loadContent()}
+function getChs(){const t=selBook.c,c1=selCh,c2=c1<t?c1+1:c1,c3=c2<t?c2+1:c2;return[...new Set([c1,c2,c3])]}
+async function loadContent(){
+  const chs=getChs();
+  document.getElementById('hdate').textContent=new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
+  document.getElementById('htit').textContent=`${selBook.n} ${chs.join('·')}장`;
+  document.getElementById('rbody').innerHTML=`<div class="loadw"><div class="cpulse">✝</div><div class="ltxt">오늘의 말씀을 불러오고 있어요<br><span class="dots"><span>.</span><span>.</span><span>.</span></span></div></div>`;
+  try{
+    const res=await fetch('/api/bible',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({apiKey,book:selBook.n,chapters:chs})});
+    if(!res.ok)throw new Error((await res.json()).error||'서버 오류');
+    curData=await res.json();readTxt=curData.audio||'';renderContent(curData,chs);
+  }catch(e){
+    document.getElementById('rbody').innerHTML=`<div class="errw"><div style="font-size:1.75rem;color:var(--cross)">✝</div><div class="errtxt">말씀을 불러오는 데 실패했어요.<br><small style="color:var(--t3)">${e.message}</small></div><button class="retry" onclick="loadContent()">다시 시도</button></div>`;
+  }
+}
+function fmtV(raw){return raw?raw.replace(/(\d+)\s/g,(_,n)=>`<span class="vn">${n}</span>`):''} 
+function renderContent(d,chs){
+  let html='<div class="rcontent fade">';
+  d.chapters.forEach(ch=>{html+=`<div class="chblock"><div class="chlbl">${selBook.n}</div><div class="chname">${ch.num}장</div><div class="vtxt">${fmtV(ch.verses)}</div><div class="spill">📌 요약</div><div class="stxt">${ch.summary}</div></div>`});
+  const last=chs[chs.length-1],hasNext=last<selBook.c||(BOOKS.findIndex(b=>b.n===selBook.n)+1)<BOOKS.length;
+  html+=`<div class="tablock"><div class="talbl">오늘의 한 문장</div><div class="tatxt">${d.takeaway}</div></div><div class="navrow"><button class="nbtn" onclick="toSetup()">책 변경</button>${hasNext?`<button class="nbtn pri" onclick="nextDay(${last})">내일 말씀 →</button>`:'<button class="nbtn pri" style="opacity:.5" disabled>완독! 🎉</button>'}</div></div>`;
+  document.getElementById('rbody').innerHTML=html;
+}
+function nextDay(last){if(last<selBook.c){selCh=last+1}else{const idx=BOOKS.findIndex(b=>b.n===selBook.n);if(idx+1<BOOKS.length){selBook=BOOKS[idx+1];selCh=1;renderBooks();renderChs()}}loadContent();window.scrollTo(0,0)}
+function toggleAudio(){curData?(speaking?stopAudio():startAudio()):null}
+function startAudio(){if(!('speechSynthesis' in window)){alert('이 브라우저는 음성을 지원하지 않아요.');return}stopAudio();const u=new SpeechSynthesisUtterance(readTxt);u.lang='ko-KR';u.rate=0.88;const v=speechSynthesis.getVoices().find(v=>v.lang.startsWith('ko'));if(v)u.voice=v;u.onend=stopAudio;u.onerror=stopAudio;speechSynthesis.speak(u);speaking=true;paused=false;elapsed=0;document.getElementById('licn').classList.add('on');document.getElementById('abar').classList.add('on');document.getElementById('ppbtn').textContent='⏸';document.getElementById('albl').textContent=`${selBook.n} ${getChs().join('·')}장 읽는 중`;tmr=setInterval(()=>{if(!paused){elapsed++;document.getElementById('atime').textContent=`${Math.floor(elapsed/60)}:${(elapsed%60).toString().padStart(2,'0')}`;document.getElementById('afill').style.width=Math.min(elapsed/(readTxt.length/7)*100,99)+'%'}},1000)}
+function togglePause(){if(!speaking)return;paused?(speechSynthesis.resume(),paused=false,document.getElementById('ppbtn').textContent='⏸'):(speechSynthesis.pause(),paused=true,document.getElementById('ppbtn').textContent='▶')}
+function stopAudio(){speechSynthesis.cancel();speaking=false;paused=false;clearInterval(tmr);document.getElementById('licn').classList.remove('on');document.getElementById('abar').classList.remove('on');document.getElementById('afill').style.width='0%';document.getElementById('atime').textContent='0:00'}
+if('speechSynthesis' in window)speechSynthesis.onvoiceschanged=()=>{};
+renderBooks();renderChs();show(apiKey?'setup-screen':'key-screen');
+</script>
+</body>
+</html>
