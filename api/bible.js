@@ -6,18 +6,35 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { apiKey, book, chapters } = req.body;
-  if (!apiKey || !book || !chapters) return res.status(400).json({ error: 'Missing params' });
+  const { apiKey, book, bookEn, chapters } = req.body;
+  if (!apiKey || !book || !bookEn || !chapters) return res.status(400).json({ error: 'Missing params' });
 
+  // 1. Fetch full Bible text from bible-api.com
+  const bibleTexts = await Promise.all(
+    chapters.map(async c => {
+      try {
+        const r = await fetch(`https://bible-api.com/${bookEn}+${c}?translation=korean`);
+        const d = await r.json();
+        // Format verses
+        if (d.verses && d.verses.length > 0) {
+          const text = d.verses.map(v => `${v.verse} ${v.text.trim()}`).join(' ');
+          return { num: c, fulltext: text };
+        }
+        return { num: c, fulltext: d.text || '' };
+      } catch(e) {
+        return { num: c, fulltext: '' };
+      }
+    })
+  );
+
+  // 2. Claude only generates explanation + takeaway (fast & short)
   const chList = chapters.map(c => `${book} ${c}장`).join(', ');
+  const prompt = `한국어 성경 묵상 전문가입니다. 오늘 말씀: ${chList}
 
-  const prompt = `한국어 성경 개역개정 전문가입니다. 오늘 말씀: ${chList}
-
-아래 형식으로만 응답하세요:
+아래 형식으로만 응답:
 
 ${chapters.map(c => `[CH_${c}]
-FULLTEXT: ${book} ${c}장 전체 본문을 개역개정 그대로. 모든 절 빠짐없이. 절번호 포함.
-EXPLAIN: 이 장을 누구나 이해할 수 있게 쉽게 2문장으로.`).join('\n\n')}
+EXPLAIN: ${book} ${c}장을 쉽고 간결하게 2문장.`).join('\n\n')}
 
 [TAKEAWAY]
 오늘 말씀 핵심 한 문장.`;
@@ -31,8 +48,8 @@ EXPLAIN: 이 장을 누구나 이해할 수 있게 쉽게 2문장으로.`).join(
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-5',
-        max_tokens: 8000,
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 600,
         messages: [{ role: 'user', content: prompt }]
       })
     });
@@ -43,17 +60,14 @@ EXPLAIN: 이 장을 누구나 이해할 수 있게 쉽게 2문장으로.`).join(
     const raw = data.content.map(i => i.text || '').join('');
     const result = { chapters: [], takeaway: '' };
 
-    chapters.forEach(c => {
+    chapters.forEach((c, i) => {
       const block = raw.match(new RegExp('\\[CH_' + c + '\\]([\\s\\S]*?)(?=\\[CH_|\\[TAKEAWAY\\]|$)'));
-      if (block) {
-        const fulltextMatch = block[1].match(/FULLTEXT:\s*([\s\S]*?)(?=EXPLAIN:)/);
-        const explainMatch = block[1].match(/EXPLAIN:\s*([\s\S]*?)$/);
-        result.chapters.push({
-          num: c,
-          fulltext: fulltextMatch ? fulltextMatch[1].trim() : '',
-          explain: explainMatch ? explainMatch[1].trim() : ''
-        });
-      }
+      const explainMatch = block ? block[1].match(/EXPLAIN:\s*([\s\S]*?)$/) : null;
+      result.chapters.push({
+        num: c,
+        fulltext: bibleTexts[i].fulltext,
+        explain: explainMatch ? explainMatch[1].trim() : ''
+      });
     });
 
     const takeawayMatch = raw.match(/\[TAKEAWAY\]\s*([\s\S]+)$/);
